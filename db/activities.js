@@ -13,9 +13,8 @@ async function getActivityById(id) {}
 
 async function getActivityByName(name) {}
 
-async function attachActivitiesToRoutines(routines) {
-  // select and return an array of all activities
-}
+// used as a helper inside db/routines.js
+async function attachActivitiesToRoutines(routines) {}
 
 async function updateActivity({ id, ...fields }) {
   // don't try to update the id
