@@ -15,6 +15,7 @@ async function createUser({ username, password }) {
       ON CONFLICT (username) DO NOTHING
       RETURNING *;
     `, [ username, hashedPassword ]);
+    delete user.password;
     return user;
   } catch (error) {
     console.error("Error creating user!", error);
@@ -48,7 +49,7 @@ async function getUserById(userId) {
 
 async function getUserByUsername(userName) {
   try {
-    const { rows: [user] } = await client.query(/*sql*/`
+    const { rows: [ user ] } = await client.query(/*sql*/`
       SELECT *
       FROM users
       WHERE username = $1;
