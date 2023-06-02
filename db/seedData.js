@@ -3,7 +3,9 @@ const {
   createUser, 
   createActivity,
   createRoutine,
-  getRoutinesWithoutActivities 
+  getRoutinesWithoutActivities,
+  getAllActivities,
+  addActivityToRoutine 
 } = require('./');
 
 const client = require("./client")
@@ -29,6 +31,7 @@ async function createTables() {
   // create all tables, in the correct order
   try {
     await client.query(/*sql*/`
+    
       CREATE TABLE users (
         id SERIAL PRIMARY KEY,
         username VARCHAR(255) UNIQUE NOT NULL,
@@ -57,6 +60,7 @@ async function createTables() {
         count INTEGER,
         UNIQUE ("routineId", "activityId")
       );
+
     `);
   } catch (error) {
     console.error('Error building tables!');
