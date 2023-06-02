@@ -1,6 +1,8 @@
+require('dotenv').config();
+
 const { Pool } = require('pg');
 
-const connectionString = process.env.DATABASE_URL || 'https://localhost:5432/fitness-dev';
+const connectionString = process.env.DATABASE_URL || 'postgres://pi-ai:5432/fitness-dev';
 
 const client = new Pool({
   connectionString,

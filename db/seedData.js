@@ -1,5 +1,11 @@
 // require in the database adapter functions as you write them (createUser, createActivity...)
-// const { } = require('./');
+const { 
+  createUser, 
+  createActivity,
+  createRoutine,
+  getRoutinesWithoutActivities 
+} = require('./');
+
 const client = require("./client")
 
 async function dropTables() {
@@ -22,37 +28,35 @@ async function createTables() {
   console.log("Starting to build tables...")
   // create all tables, in the correct order
   try {
-    await client.connect(/*sql*/`
-      CREATE TABLE users,
-      id SERIAL PRIMARY KEY,
-      username VARCHAR(255) UNIQUE NOT NULL,
-      password VARCHAR(255) NOT NULL  
-    `);
+    await client.query(/*sql*/`
+      CREATE TABLE users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL  
+      );
 
-      await client.connect(/*sql*/`
-      CREATE TABLE activities,
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(255) UNIQUE NOT NULL,
-      description VARCHAR(255) NOT NULL  
-    `);
+      CREATE TABLE activities (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) UNIQUE NOT NULL,
+        description VARCHAR(255) NOT NULL  
+      );
 
-    await client.connect(/*sql*/`
-      CREATE TABLE routines,
-      id SERIAL PRIMARY KEY,
-      "creatorId" INTEGER REFERENCES users(id),
-      "isPublic" BOOLEAN DEFAULT false,
-      name VARCHAR(255) UNIQUE NOT NULL,
-      goal TEXT NOT NULL
-    `);
-
-    await client.connect(/*sql*/`
-      CREATE TABLE routine_activities,
-      id SERIAL PRIMARY KEY,
-      "routineId" INTEGER REFERENCES routines(id),
-      "activityId" INTEGER REFERENCES activities(id),
-      duration INTEGER,
-      count INTEGER,
-      UNIQUE ("routineId", "activityId")
+      CREATE TABLE routines (
+        id SERIAL PRIMARY KEY,
+        "creatorId" INTEGER REFERENCES users(id),
+        "isPublic" BOOLEAN DEFAULT false,
+        name VARCHAR(255) UNIQUE NOT NULL,
+        goal TEXT NOT NULL
+      );
+    
+      CREATE TABLE routine_activities (
+        id SERIAL PRIMARY KEY, 
+        "routineId" INTEGER REFERENCES routines(id),
+        "activityId" INTEGER REFERENCES activities(id),
+        duration INTEGER,
+        count INTEGER,
+        UNIQUE ("routineId", "activityId")
+      );
     `);
   } catch (error) {
     console.error('Error building tables!');
