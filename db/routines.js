@@ -1,24 +1,95 @@
+const { addActivitiesToRoutines } = require('./activities');
 const client = require("./client");
 
-async function createRoutine({ creatorId, isPublic, name, goal }) {}
+async function createRoutine({ creatorId, isPublic, name, goal }) {
+  try {
+    const { rows: [ routine ] } = await client.query(/*sql*/`
+      INSERT INTO routines ("creatorId", "isPublic", name, goal)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *;
+    `, [ creatorId, isPublic, name, goal ]);
+    return routine;
+  } catch (error) {
+    console.error("Error creating activity!", error);
+    throw error; 
+  }
+}
 
-async function getRoutineById(id) {}
+async function getRoutineById(id) {
+  try {
+    const { rows: [ routine ] } = await client.query(/*sql*/`
+      SELECT id, creatorId, isPublic, name, goal
+      FROM routines
+      WHERE id = $1;
+    `, [ id ]);
+    console.log(routine)
+    return routine;
+  } catch (error) {
+    console.error("Error getting routine by id!", error);
+    throw error;
+  }
+}
 
-async function getRoutinesWithoutActivities() {}
+async function getRoutinesWithoutActivities() {
+  try {
+    const { rows } = await client.query(/*sql*/`
+      SELECT * 
+      FROM routines    
+    `);
+    return rows;
+  } catch (error) {
+    console.error("Error getting routines without and activity!", error);
+    throw error;
+  }
+}
 
-async function getAllRoutines() {}
+//TODO ASK QUESTION IN CLASS MONDAY
+async function getAllRoutines() {
+    try {
+    const { rows: routines } = await client.query(/*sql*/`
+      SELECT * 
+      FROM routines    
+    `);
+    return routines;
+  } catch (error) {
+    console.error("Error getting all routines!", error);
+    throw error;
+  }
+}
 
-async function getAllPublicRoutines() {}
+async function getAllPublicRoutines() {
+    try {
+    const { rows: routines } = await client.query(/*sql*/`
+      SELECT * 
+      FROM routines 
+      WHERE "isPublic" = true   
+    `);
+    return routines;
+  } catch (error) {
+    console.error("Error getting all public routines!", error);
+    throw error;
+  }
+}
 
-async function getAllRoutinesByUser({ username }) {}
+async function getAllRoutinesByUser({ username }) {
 
-async function getPublicRoutinesByUser({ username }) {}
+}
 
-async function getPublicRoutinesByActivity({ id }) {}
+async function getPublicRoutinesByUser({ username }) {
 
-async function updateRoutine({ id, ...fields }) {}
+}
 
-async function destroyRoutine(id) {}
+async function getPublicRoutinesByActivity({ id }) {
+
+}
+
+async function updateRoutine({ id, ...fields }) {
+
+}
+
+async function destroyRoutine(id) {
+
+}
 
 module.exports = {
   getRoutineById,
