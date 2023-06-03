@@ -91,8 +91,9 @@ async function canEditRoutineActivity(routineActivityId, userId) {
     `, [ routineId ]);
     if (routine.creatorId === userId) {
       return true;
+    } else {
+      return false;
     }
-    return false;
   } catch (error) {
     console.error("Error editing routine activity!", error);
     throw error; 
