@@ -61,21 +61,15 @@ async function getActivityByName(name) {
 // used as a helper inside db/routines.js
 //TODO ASK QUESTION ON MONDAY CLASS
 async function attachActivitiesToRoutines(routines) {
-    try {
+  try {
     const { rows: [ routine_activities ] } = await client.query(/*sql*/`
-      SELECT * 
-      FROM routine_activities
-      WHERE name = $1;
+ 
     `,);
-
-    routine_activities.map()
-    
-    return routines;
+   
   } catch (error) {
-    console.error("Error getting activity by name!", error);
+    console.error("Error attaching activities to routines!", error);
     throw error;
   }
-
 }
 
 async function updateActivity({ id, ...fields }) {
@@ -98,7 +92,7 @@ async function updateActivity({ id, ...fields }) {
     `, Object.values(fields));
     return activity;
   } catch (error) {
-    console.error("Error updating user!", error);
+    console.error("Error updating activity!", error);
   }
 }
 
