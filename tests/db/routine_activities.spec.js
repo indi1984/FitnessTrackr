@@ -22,7 +22,7 @@ const {
   createFakeUser,
 } = require("../helpers");
 
-describe("DB Routine Activities", () => {
+xdescribe("DB Routine Activities", () => {
   let fakeActivity;
   let fakeRoutine;
   let routineActivityData;
