@@ -61,50 +61,20 @@ async function getActivityByName(name) {
 // used as a helper inside db/routines.js
 async function attachActivitiesToRoutines(routines) {
   try {
-    //* Routines
-    const routineId = routines
-      .map((routine) => routine.id)
-      .join(', ');
     const { rows: routine_activities } = await client.query(/*sql*/`
-      SELECT * 
-      FROM routine_activities
-      WHERE "routineId" IN (${ routineId })
-    `);
-
-    //* Activities
-    const activityId = routine_activities
-      .map((activity) => activity.id)
-      .join(', ');
-    // const { rows: activities } = await client.query(/*sql*/`
-    //   SELECT * 
-    //   FROM activities
-    //   WHERE id IN (${ activityId })
-    // `);
-
-    // console.log(activities);
-
-    //* Adding duration, count, routineId, activityId to activities
-    const { rows: activitiesDC } = await client.query(/*sql*/`
       SELECT activities.*,
         routine_activities.duration, 
         routine_activities.count, 
         routine_activities."routineId",
-        routine_activities.id AS "routineActivityId"  /* You cant have duplicate column names (in this case id) */
+        routine_activities.id AS "routineActivityId"
       FROM activities
       INNER JOIN routine_activities
-      ON activities.id = routine_activities."activityId"
-      WHERE activities.id IN (${ activityId });   
+      ON activities.id = routine_activities."activityId";  
     `);
-  
-    //* Adding activities to routines table
     routines.forEach((routine) => {
-      // must filter only the activities related to routine.. without filter was adding all activities to all routines
-      routine.activities = activitiesDC.filter((activityDC) => activityDC.routineId === routine.id)
-      // routine.activities = activitiesDC
+      routine.activities = routine_activities.filter((activityDC) => activityDC.routineId === routine.id)
     });
-
     return routines;
-
   } catch (error) {
     console.error("Error attaching activities to routines!", error);
     throw error;
