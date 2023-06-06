@@ -43,7 +43,6 @@ async function getRoutinesWithoutActivities() {
   }
 }
 
-//TODO ASK QUESTION IN CLASS MONDAY
 async function getAllRoutines() {
     try {
     const { rows: routines } = await client.query(/*sql*/`
@@ -60,13 +59,10 @@ async function getAllRoutines() {
 }
 
 async function getAllPublicRoutines() {
-    try {
-    const { rows: routines } = await client.query(/*sql*/`
-      SELECT * 
-      FROM routines 
-      WHERE "isPublic" = true   
-    `);
-    return routines;
+  try {
+    const routines = await getAllRoutines()
+    const publicRoutines = routines.filter((routine) => routine.isPublic === true);
+    return publicRoutines;
   } catch (error) {
     console.error("Error getting all public routines!", error);
     throw error;
@@ -74,11 +70,27 @@ async function getAllPublicRoutines() {
 }
 
 async function getAllRoutinesByUser({ username }) {
-
+  try {
+    const routines = await getAllRoutines()
+    const userRoutines = routines.filter((user) => user.creatorName === username);
+    return userRoutines;
+  } catch (error) {
+    console.error("Error getting all public routines!", error);
+    throw error;
+  }
 }
 
 async function getPublicRoutinesByUser({ username }) {
-
+  try {
+    const routines = await getAllRoutines()
+    const userRoutines = routines.filter((user) => user.creatorName === username);
+    const publicUserRoutines = userRoutines.filter((user) => user.isPublic === true);
+    console.log(publicUserRoutines);
+    return publicUserRoutines;
+  } catch (error) {
+    console.error("Error getting all public routines!", error);
+    throw error;
+  }
 }
 
 async function getPublicRoutinesByActivity({ id }) {

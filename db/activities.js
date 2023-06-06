@@ -81,6 +81,8 @@ async function attachActivitiesToRoutines(routines) {
     //   WHERE id IN (${ activityId })
     // `);
 
+    // console.log(activities);
+
     //* Adding duration, count, routineId, activityId to activities
     const { rows: activitiesDC } = await client.query(/*sql*/`
       SELECT activities.*,
@@ -95,12 +97,14 @@ async function attachActivitiesToRoutines(routines) {
     `);
   
     //* Adding activities to routines table
-      routines.forEach((routine) => {
-        // must filter only the activities related to routine.. without filter was adding all activities to all routines
-        routine.activities = activitiesDC.filter((activityDC) => activityDC.routineId === routine.id)
-      });
+    routines.forEach((routine) => {
+      // must filter only the activities related to routine.. without filter was adding all activities to all routines
+      routine.activities = activitiesDC.filter((activityDC) => activityDC.routineId === routine.id)
+      // routine.activities = activitiesDC
+    });
 
-    return routines; 
+    return routines;
+
   } catch (error) {
     console.error("Error attaching activities to routines!", error);
     throw error;
