@@ -69,7 +69,7 @@ async function getAllPublicRoutines() {
     `);
     return await attachActivitiesToRoutines(routines);
   } catch (error) {
-    console.error("Error getting all routines!", error);
+    console.error("Error getting all public routines!", error);
     throw error;
   }
 }
@@ -96,7 +96,7 @@ async function getAllRoutinesByUser({ username }) {
     `, [ username ]);
     return await attachActivitiesToRoutines(routines);
   } catch (error) {
-    console.error("Error getting all routines!", error);
+    console.error("Error getting all routines by user!", error);
     throw error;
   }
 }
@@ -123,7 +123,7 @@ async function getPublicRoutinesByUser({ username }) {
     `, [ username ]);
     return await attachActivitiesToRoutines(routines);
   } catch (error) {
-    console.error("Error getting all routines!", error);
+    console.error("Error getting public routines by user!", error);
     throw error;
   }
 }
@@ -156,7 +156,7 @@ async function getPublicRoutinesByActivity({ id }) {
     `, [ id ]);
     return await attachActivitiesToRoutines(routines);
   } catch (error) {
-    console.error("Error getting all routines!", error);
+    console.error("Error getting all routines by activity!", error);
     throw error;
   }
 }
