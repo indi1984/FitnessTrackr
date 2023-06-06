@@ -46,14 +46,14 @@ async function getRoutinesWithoutActivities() {
 //TODO ASK QUESTION IN CLASS MONDAY
 async function getAllRoutines() {
     try {
-    const { rows } = await client.query(/*sql*/`
+    const { rows: routines } = await client.query(/*sql*/`
       SELECT routines.*, users.username AS "creatorName"
       FROM routines
       INNER JOIN users
-      ON "creatorId" = users.id;   
+      ON routines."creatorId" = users.id;   
     `);
-    // return await attachActivitiesToRoutines(rows);
-    return rows;
+    const newRoutines = await attachActivitiesToRoutines(routines);
+    return newRoutines ;
   } catch (error) {
     console.error("Error getting all routines!", error);
     throw error;

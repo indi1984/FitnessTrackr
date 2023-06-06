@@ -59,13 +59,33 @@ async function getActivityByName(name) {
 }
 
 // used as a helper inside db/routines.js
-//TODO ASK QUESTION ON MONDAY CLASS
 async function attachActivitiesToRoutines(routines) {
   try {
-    const { rows: [ routine_activities ] } = await client.query(/*sql*/`
- 
-    `,);
-   
+    //* Routines
+    const routineId = routines
+      .map((routine) => routine.id)
+      .join(', ');
+    const { rows: routine_activities } = await client.query(/*sql*/`
+      SELECT * 
+      FROM routine_activities
+      WHERE "routineId" IN (${ routineId })
+    `);
+
+    //* Activities
+    const activityId = routine_activities
+      .map((activity) => activity.id)
+      .join(', ');
+    const { rows: activities } = await client.query(/*sql*/`
+      SELECT * 
+      FROM activities
+      WHERE id IN (${ activityId })
+    `);
+
+    //* Adding activities to routines table
+    routines.forEach((routine) => { routine.activities = activities });
+
+    console.log(routines);
+    return routines; 
   } catch (error) {
     console.error("Error attaching activities to routines!", error);
     throw error;
@@ -76,7 +96,6 @@ async function updateActivity({ id, ...fields }) {
   // don't try to update the id
   // do update the name and description
   // return the updated activity
-
   const setString = Object.keys(fields).map(
     (key, index) => `"${ key }" = $${ index + 1 }`
   ).join(', ');
