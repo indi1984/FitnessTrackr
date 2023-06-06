@@ -72,7 +72,7 @@ async function attachActivitiesToRoutines(routines) {
       ON activities.id = routine_activities."activityId";  
     `);
     routines.forEach((routine) => {
-      routine.activities = routineNewActivities.filter((activityDC) => activityDC.routineId === routine.id)
+      routine.activities = routineNewActivities.filter((activityDC) => activityDC.routineId === routine.id);
     });
     return routines;
   } catch (error) {

@@ -44,7 +44,7 @@ async function getRoutinesWithoutActivities() {
 }
 
 async function getAllRoutines() {
-    try {
+  try {
     const { rows: routines } = await client.query(/*sql*/`
       SELECT routines.*, users.username AS "creatorName"
       FROM routines
@@ -59,7 +59,7 @@ async function getAllRoutines() {
 }
 
 async function getAllPublicRoutines() {
-    try {
+   try {
     const { rows: routines } = await client.query(/*sql*/`
       SELECT routines.*, users.username AS "creatorName"
       FROM routines
@@ -86,7 +86,7 @@ async function getAllPublicRoutines() {
 // }
 
 async function getAllRoutinesByUser({ username }) {
-    try {
+  try {
     const { rows: routines } = await client.query(/*sql*/`
       SELECT routines.*, users.username AS "creatorName"
       FROM routines
@@ -113,18 +113,18 @@ async function getAllRoutinesByUser({ username }) {
 // }
 
 async function getPublicRoutinesByUser({ username }) {
-    try {
-    const { rows: routines } = await client.query(/*sql*/`
-      SELECT routines.*, users.username AS "creatorName"
-      FROM routines
-      INNER JOIN users
-      ON routines."creatorId" = users.id
-      WHERE users.username = $1AND routines."isPublic" = true;  
-    `, [ username ]);
-    return await attachActivitiesToRoutines(routines);
+try {
+  const { rows: routines } = await client.query(/*sql*/`
+    SELECT routines.*, users.username AS "creatorName"
+    FROM routines
+    INNER JOIN users
+    ON routines."creatorId" = users.id
+    WHERE users.username = $1 AND routines."isPublic" = true;  
+  `, [ username ]);
+  return await attachActivitiesToRoutines(routines);
   } catch (error) {
-    console.error("Error getting all routines!", error);
-    throw error;
+  console.error("Error getting all routines!", error);
+  throw error;
   }
 }
 
@@ -141,7 +141,25 @@ async function getPublicRoutinesByUser({ username }) {
 // }
 
 async function getPublicRoutinesByActivity({ id }) {
-
+  try {
+    const { rows: routines } = await client.query(/*sql*/`
+      SELECT routines.*, 
+        routine_activities."routineId", 
+        routine_activities."activityId", 
+        users.username AS "creatorName"
+      FROM routines
+      INNER JOIN routine_activities
+        ON routines.id = routine_activities."routineId"  
+      INNER JOIN users
+        ON routines."creatorId" = users.id
+      WHERE routine_activities."activityId" = $1 
+        AND routines."isPublic" = true;
+    `, [ id ]);
+    return await attachActivitiesToRoutines(routines);
+  } catch (error) {
+    console.error("Error getting all routines!", error);
+    throw error;
+  }
 }
 
 async function updateRoutine({ id, ...fields }) {
