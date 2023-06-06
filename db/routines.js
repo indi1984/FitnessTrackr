@@ -52,8 +52,7 @@ async function getAllRoutines() {
       INNER JOIN users
       ON routines."creatorId" = users.id;   
     `);
-    const newRoutines = await attachActivitiesToRoutines(routines);
-    return newRoutines ;
+    return await attachActivitiesToRoutines(routines);
   } catch (error) {
     console.error("Error getting all routines!", error);
     throw error;

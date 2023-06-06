@@ -75,16 +75,32 @@ async function attachActivitiesToRoutines(routines) {
     const activityId = routine_activities
       .map((activity) => activity.id)
       .join(', ');
-    const { rows: activities } = await client.query(/*sql*/`
-      SELECT * 
+    // const { rows: activities } = await client.query(/*sql*/`
+    //   SELECT * 
+    //   FROM activities
+    //   WHERE id IN (${ activityId })
+    // `);
+
+    //* Adding duration, count, routineId, activityId to activities
+    const { rows: activitiesDC } = await client.query(/*sql*/`
+      SELECT activities.*,
+        routine_activities.duration, 
+        routine_activities.count, 
+        routine_activities."routineId",
+        routine_activities.id AS "routineActivityId"  //! You cant have duplicate column names (in this case id)
       FROM activities
-      WHERE id IN (${ activityId })
+      INNER JOIN routine_activities
+      ON activities.id = routine_activities."activityId"
+      WHERE activities.id IN (${ activityId });   
     `);
-
+  
     //* Adding activities to routines table
-    routines.forEach((routine) => { routine.activities = activities });
+      routines.forEach((routine) => {
+        routine.activities = activitiesDC.filter((activityDC) => activityDC.routineId === routine.id)
+      });
 
-    console.log(routines);
+    console.log(routines)
+
     return routines; 
   } catch (error) {
     console.error("Error attaching activities to routines!", error);
