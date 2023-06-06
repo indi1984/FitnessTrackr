@@ -87,7 +87,7 @@ async function attachActivitiesToRoutines(routines) {
         routine_activities.duration, 
         routine_activities.count, 
         routine_activities."routineId",
-        routine_activities.id AS "routineActivityId"  //! You cant have duplicate column names (in this case id)
+        routine_activities.id AS "routineActivityId"  /* You cant have duplicate column names (in this case id) */
       FROM activities
       INNER JOIN routine_activities
       ON activities.id = routine_activities."activityId"
@@ -96,10 +96,9 @@ async function attachActivitiesToRoutines(routines) {
   
     //* Adding activities to routines table
       routines.forEach((routine) => {
+        // must filter only the activities related to routine.. without filter was adding all activities to all routines
         routine.activities = activitiesDC.filter((activityDC) => activityDC.routineId === routine.id)
       });
-
-    console.log(routines)
 
     return routines; 
   } catch (error) {
