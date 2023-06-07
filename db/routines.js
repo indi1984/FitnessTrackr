@@ -185,8 +185,8 @@ async function updateRoutine({ id, ...fields }) {
 async function destroyRoutine(id) {
   try {
     await client.query(/*sql*/ `
-    DELETE FROM routine_activities
-    WHERE "routineId" = $1;
+      DELETE FROM routine_activities
+      WHERE "routineId" = $1;
     `, [ id ]);
     await client.query(/*sql*/ `
       DELETE FROM routines
