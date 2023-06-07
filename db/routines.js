@@ -177,7 +177,7 @@ async function updateRoutine({ id, ...fields }) {
     `, Object.values(fields));
     return routine;
   } catch (error) {
-    console.log("Error updating routine!");
+    console.error("Error updating routine!");
     throw error;
   }
 }
@@ -193,7 +193,7 @@ async function destroyRoutine(id) {
       WHERE id = ${id}
     `);
   } catch (error) {
-    console.log("Error destroying routine!");
+    console.error("Error destroying routine!");
     throw error;
   }
 }
