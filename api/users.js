@@ -1,8 +1,8 @@
 /* eslint-disable no-useless-catch */
 const express = require("express");
 const usersRouter = express.Router();
-const { UserTakenError, PasswordTooShortError } = require('../errors');
-const { createUser, getUserByUsername } = require('../db/users');
+const { UserTakenError, PasswordTooShortError, UnauthorizedError } = require('../errors');
+const { createUser, getUserByUsername, getUser, getUserById } = require('../db/users');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
 
@@ -44,26 +44,50 @@ usersRouter.post('/register', async (req, res, next) => {
   }
 });
 
-
 // POST /api/users/login
 usersRouter.post('/login', async (req, res, next) => {
   const { username, password } = req.body;
   try {
-    res.status(200).send(req.body);
+    const user = await getUser({ username, password });
+    if (user) {
+      const token = await jwt.sign({
+        id: user.id,
+        username
+      }, JWT_SECRET);
+      const verifiedUser = {
+        message: "you're logged in!",
+        user,
+        token
+      }
+      res.send(verifiedUser);
+    }
   } catch (error) {
     next(error);
   }  
 });
 
-
 // GET /api/users/me
 usersRouter.get('/me', async (req, res, next) => {
-  const { username, password } = req.body;
-  try {
-    res.status(200).send(req.body);
-  } catch (error) {
-    next(error);
-  }  
+  const prefix = 'Bearer ';
+  const auth = req.header('Authorization');
+    if (!auth) {
+      res.status(401).send({
+        error: "Requirements",
+        name: "Login",
+        message: UnauthorizedError()
+      })
+    } else if (auth.startsWith(prefix)) {
+      const token = auth.slice(prefix.length);
+      try {
+        const { id } = jwt.verify(token, JWT_SECRET);
+        if (id) {
+          req.username = await getUserById(id);
+          res.send(req.username);
+        }
+      } catch (error) {
+        next(error);
+      }
+    }
 });
 
 // GET /api/users/:username/routines
