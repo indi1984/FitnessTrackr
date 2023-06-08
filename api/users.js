@@ -46,9 +46,34 @@ usersRouter.post('/register', async (req, res, next) => {
 
 
 // POST /api/users/login
+usersRouter.post('/login', async (req, res, next) => {
+  const { username, password } = req.body;
+  try {
+    res.status(200).send(req.body);
+  } catch (error) {
+    next(error);
+  }  
+});
+
 
 // GET /api/users/me
+usersRouter.get('/me', async (req, res, next) => {
+  const { username, password } = req.body;
+  try {
+    res.status(200).send(req.body);
+  } catch (error) {
+    next(error);
+  }  
+});
 
 // GET /api/users/:username/routines
+usersRouter.get('/:username/routines', async (req, res, next) => {
+  const { username } = req.params;
+  try {
+    res.status(200).send(req.params);
+  } catch (error) {
+    next(error);
+  }  
+});
 
 module.exports = usersRouter;
