@@ -1,10 +1,23 @@
 /* eslint-disable no-useless-catch */
 const express = require("express");
 const usersRouter = express.Router();
-const { UserTakenError, PasswordTooShortError, UnauthorizedError } = require('../errors');
-const { createUser, getUserByUsername, getUser, getUserById } = require('../db/users');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
+
+const { UserTakenError, 
+  PasswordTooShortError, 
+  UnauthorizedError } = require('../errors');
+
+const { createUser, 
+  getUserByUsername, 
+  getUser, 
+  getUserById } = require('../db/users');
+
+const { getPublicRoutinesByUser, 
+  getAllRoutinesByUser } = require('../db/routines')
+
+
+
 
 // POST /api/users/register
 usersRouter.post('/register', async (req, res, next) => {
@@ -93,11 +106,27 @@ usersRouter.get('/me', async (req, res, next) => {
 // GET /api/users/:username/routines
 usersRouter.get('/:username/routines', async (req, res, next) => {
   const { username } = req.params;
-  try {
-    res.status(200).send(req.params);
-  } catch (error) {
-    next(error);
-  }  
+  const prefix = 'Bearer ';
+  const auth = req.header('Authorization');
+  if (!auth) {
+    try {
+      const userPublicRoutines = await getPublicRoutinesByUser({ username });
+      res.send(userPublicRoutines);
+    } catch (error) {
+      next(error);
+    }
+  } else if (auth.startsWith(prefix)) {
+    const token = auth.slice(prefix.length);
+    try {
+      const { id } = jwt.verify(token, JWT_SECRET);
+      if (id) {
+        const userAllRoutines = await getAllRoutinesByUser({ username });
+        res.send(userAllRoutines);
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
 });
 
 module.exports = usersRouter;
