@@ -12,15 +12,18 @@ usersRouter.post('/register', async (req, res, next) => {
   try {
     const _user = await getUserByUsername(username);
     if (_user) {
-      throw new Error({
-        message: UserTakenError(username),
-        name: username,
+      // throw new Error(UserTakenError(username))
+      throw ({
+        error: "Requirements",
+        name: "User",
+        message: UserTakenError(username)
       })
     }
     if (password.length < 8) {
-      throw new Error({
-        message: PasswordTooShortError(),
-        name: password,
+      throw ({
+        error: "Requirements",
+        name: "Password",
+        message: PasswordTooShortError()
       })
     }
     const user = await createUser({
@@ -36,8 +39,8 @@ usersRouter.post('/register', async (req, res, next) => {
       token,
       user 
     });
-  } catch ({ message, name }) {
-    next({ message, name});
+  } catch (error) {
+    next(error);
   }
 });
 

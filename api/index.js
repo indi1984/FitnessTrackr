@@ -61,14 +61,14 @@ apiRouter.get('*', (req, res) => {
 });
 
 //* Error Handler
-apiRouter.use((error, req, res) => {
+apiRouter.use((error, req, res, next) => {
   // console.error(error);
   res.send({
+    error: error.error,
     name: error.name,
-    message: error.message,
-    data: [],
-    error: true
+    message: error.message    
   });
+  next();
 });
 
 module.exports = apiRouter;
