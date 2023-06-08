@@ -3,21 +3,15 @@ const express = require("express");
 const usersRouter = express.Router();
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
-
 const { UserTakenError, 
   PasswordTooShortError, 
   UnauthorizedError } = require('../errors');
-
 const { createUser, 
   getUserByUsername, 
   getUser, 
   getUserById } = require('../db/users');
-
 const { getPublicRoutinesByUser, 
   getAllRoutinesByUser } = require('../db/routines')
-
-
-
 
 // POST /api/users/register
 usersRouter.post('/register', async (req, res, next) => {
@@ -103,7 +97,7 @@ usersRouter.get('/me', async (req, res, next) => {
     }
 });
 
-// GET /api/users/:username/routines
+//GET /api/users/:username/routines
 usersRouter.get('/:username/routines', async (req, res, next) => {
   const { username } = req.params;
   console.log(username);
