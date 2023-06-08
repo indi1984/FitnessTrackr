@@ -1,10 +1,13 @@
 const express = require('express');
 const activitiesRouter = express.Router();
+const { requireUser } = require('./utils');
 const { ActivityExistsError } = require('../errors');
 const { getAllActivities,
   createActivity } = require('../db/activities');
 
 // GET /api/activities/:activityId/routines
+
+
 
 // GET /api/activities
 activitiesRouter.get('/', async (req, res, next) => {
@@ -16,7 +19,7 @@ activitiesRouter.get('/', async (req, res, next) => {
 });
 
 // POST /api/activities
-activitiesRouter.post('/', async (req, res, next) => {
+activitiesRouter.post('/', requireUser, async (req, res, next) => {
   const { name, description } = req.body;
   try {
     if (req.body) {
@@ -34,5 +37,7 @@ activitiesRouter.post('/', async (req, res, next) => {
 });
 
 // PATCH /api/activities/:activityId
+
+
 
 module.exports = activitiesRouter;

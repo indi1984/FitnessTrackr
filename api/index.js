@@ -40,7 +40,6 @@ apiRouter.use((req, res, next) => {
   next();
 });
 
-
 apiRouter.get('/health', async (req, res, next) => { 
   try {
     res.send({ message: "Everything is healthy!" });
@@ -62,7 +61,6 @@ apiRouter.get('*', (req, res) => {
 
 //* Error Handler
 apiRouter.use((error, req, res, next) => {
-  // console.error(error);
   res.send({
     error: error.error,
     name: error.name,

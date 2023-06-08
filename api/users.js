@@ -3,6 +3,7 @@ const express = require("express");
 const usersRouter = express.Router();
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
+const { requireUser } = require('./utils');
 const { UserTakenError, 
   PasswordTooShortError, 
   UnauthorizedError } = require('../errors');
@@ -19,7 +20,6 @@ usersRouter.post('/register', async (req, res, next) => {
   try {
     const _user = await getUserByUsername(username);
     if (_user) {
-      // throw new Error(UserTakenError(username))
       throw ({
         error: "Requirements",
         name: "User",
@@ -98,7 +98,7 @@ usersRouter.get('/me', async (req, res, next) => {
 });
 
 //GET /api/users/:username/routines
-usersRouter.get('/:username/routines', async (req, res, next) => {
+usersRouter.get('/:username/routines', requireUser, async (req, res, next) => {
   const { username } = req.params;
   console.log(username);
   const prefix = 'Bearer ';
