@@ -1,7 +1,11 @@
 const express = require('express');
 const apiRouter = express.Router();
 const jwt = require('jsonwebtoken');
-const { getUserById } = require('../db');
+const { getUserById } = require('../db/users');
+const usersRouter = require('./users');
+const activitiesRouter = require('./activities');
+const routinesRouter = require('./routines');
+const routineActivitiesRouter = require('./routineActivities');
 const { JWT_SECRET } = process.env;
 
 
@@ -37,25 +41,32 @@ apiRouter.use((req, res, next) => {
 });
 
 // GET /api/health
-apiRouter.get('/health', async (req, res, next) => {
+// apiRouter.get('/health', async (req, res, next) => {
 
   
+// });
+
+apiRouter.use('/users', usersRouter);
+apiRouter.use('/activities', activitiesRouter);
+apiRouter.use('/routines', routinesRouter);
+apiRouter.use('/routine_activities', routineActivitiesRouter);
+
+//* 404 Handler (Non-Exiting Routes)
+apiRouter.get('*', (req, res) => {
+  res.status(404).send(/*html*/`
+    <h1>Sorry, this route does not exist!</h1>
+  `);
 });
 
-// ROUTER: /api/users
-const usersRouter = require('./users');
-apiRouter.use('/users', usersRouter);
-
-// ROUTER: /api/activities
-const activitiesRouter = require('./activities');
-apiRouter.use('/activities', activitiesRouter);
-
-// ROUTER: /api/routines
-const routinesRouter = require('./routines');
-apiRouter.use('/routines', routinesRouter);
-
-// ROUTER: /api/routine_activities
-const routineActivitiesRouter = require('./routineActivities');
-apiRouter.use('/routine_activities', routineActivitiesRouter);
+//* Error Handler
+apiRouter.use((error, req, res) => {
+  console.error(error);
+  res.send({
+    name: error.name,
+    message: error.message,
+    data: [],
+    error: true
+  });
+});
 
 module.exports = apiRouter;
