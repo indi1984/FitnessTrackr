@@ -19,7 +19,7 @@ apiRouter.use(async (req, res, next) => {
     try {
       const { id } = jwt.verify(token, JWT_SECRET);
       if (id) {
-        req.user = await getUserById(id);
+        req.username = await getUserById(id);
         next();
       }
     } catch ({ name, message }) {
@@ -40,11 +40,15 @@ apiRouter.use((req, res, next) => {
   next();
 });
 
-// GET /api/health
-// apiRouter.get('/health', async (req, res, next) => {
 
-  
-// });
+apiRouter.get('/health', async (req, res, next) => { 
+  try {
+    res.send({ message: "Everything is healthy!" });
+  } catch (error) {
+    console.error("Server is not healthy!", error);
+    next(error);
+  }
+});
 
 apiRouter.use('/users', usersRouter);
 apiRouter.use('/activities', activitiesRouter);
@@ -53,14 +57,12 @@ apiRouter.use('/routine_activities', routineActivitiesRouter);
 
 //* 404 Handler (Non-Exiting Routes)
 apiRouter.get('*', (req, res) => {
-  res.status(404).send(/*html*/`
-    <h1>Sorry, this route does not exist!</h1>
-  `);
+  res.status(404).send({ message: "Error, can not find that page" });
 });
 
 //* Error Handler
 apiRouter.use((error, req, res) => {
-  console.error(error);
+  // console.error(error);
   res.send({
     name: error.name,
     message: error.message,
@@ -70,3 +72,6 @@ apiRouter.use((error, req, res) => {
 });
 
 module.exports = apiRouter;
+
+
+
