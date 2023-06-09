@@ -3,7 +3,6 @@ const express = require("express");
 const usersRouter = express.Router();
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
-const { requireUser } = require('./utils');
 const { UserTakenError, 
   PasswordTooShortError, 
   UnauthorizedError } = require('../errors');
@@ -98,34 +97,6 @@ usersRouter.get('/me', async (req, res, next) => {
 });
 
 //GET /api/users/:username/routines
-// usersRouter.get('/:username/routines', async (req, res, next) => {
-//   const { username } = req.params;
-//   console.log(username);
-//   const prefix = 'Bearer ';
-//   const auth = req.header('Authorization');
-//   console.log(auth);
-//   if (req.user) {
-//     try {
-//       const userPublicRoutines = await getPublicRoutinesByUser({ username });
-//       console.log(userPublicRoutines);
-//       res.send(userPublicRoutines);
-//     } catch (error) {
-//       next(error);
-//     }
-//   } else if (auth.startsWith(prefix)) {
-//     const token = auth.slice(prefix.length);
-//     try {
-//       const { id } = jwt.verify(token, JWT_SECRET);
-//       if (id) {
-//         const userAllRoutines = await getAllRoutinesByUser({ username });
-//         res.send(userAllRoutines);
-//       }
-//     } catch (error) {
-//       next(error);
-//     }
-//   }
-// });
-
 usersRouter.get('/:username/routines', async (req, res, next) => {
   const username = req.params.username;
   const user = req.user.username;
