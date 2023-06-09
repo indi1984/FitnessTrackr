@@ -1,9 +1,9 @@
 const express = require('express');
 const activitiesRouter = express.Router();
 const { requireUser } = require('./utils');
+const { getPublicRoutinesByActivity } = require('../db/routines');
 const { ActivityExistsError,
   ActivityNotFoundError } = require('../errors');
-const { getPublicRoutinesByActivity } = require('../db/routines');
 const { getAllActivities,
   createActivity,
   updateActivity,
@@ -62,9 +62,10 @@ activitiesRouter.post('/', requireUser, async (req, res, next) => {
 activitiesRouter.patch('/:activityId', requireUser, async (req, res, next) => {
   const { activityId }= req.params;
   const { name, description }= req.body;
+  const id = activityId;
   try {
     const activityByName = await getActivityByName(name);
-    const activityById = await getActivityById(activityId);
+    const activityById = await getActivityById(id);
     if (activityByName) {
       throw ({
         error: "Duplicate",
@@ -75,11 +76,11 @@ activitiesRouter.patch('/:activityId', requireUser, async (req, res, next) => {
       throw ({
         error: "Does not exist",
         name: "Activity Name",
-        message: ActivityNotFoundError(activityId)
+        message: ActivityNotFoundError(id)
       })
     } else {
       const changedActivity = await updateActivity({
-         id: activityId, 
+         id, 
          name, 
          description 
       });  
