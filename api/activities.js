@@ -60,9 +60,9 @@ activitiesRouter.post('/', requireUser, async (req, res, next) => {
 
 // PATCH /api/activities/:activityId
 activitiesRouter.patch('/:activityId', requireUser, async (req, res, next) => {
-  const { activityId }= req.params;
-  const { name, description }= req.body;
-  const id = activityId;
+  const id = req.params.activityId;
+  const name = req.body.name;
+  const description = req.body.description;
   try {
     const activityByName = await getActivityByName(name);
     const activityById = await getActivityById(id);

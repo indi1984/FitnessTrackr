@@ -18,7 +18,7 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
 async function getRoutineById(id) {
   try {
     const { rows: [ routine ] } = await client.query(/*sql*/`
-      SELECT id, creatorId, isPublic, name, goal
+      SELECT *
       FROM routines
       WHERE id = $1;
     `, [ id ]);
