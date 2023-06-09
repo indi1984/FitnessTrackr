@@ -22,7 +22,6 @@ async function getRoutineById(id) {
       FROM routines
       WHERE id = $1;
     `, [ id ]);
-    console.log(routine)
     return routine;
   } catch (error) {
     console.error("Error getting routine by id!", error);
