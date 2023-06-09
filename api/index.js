@@ -66,7 +66,7 @@ apiRouter.use((error, req, res, next) => {
     name: error.name,
     message: error.message    
   });
-  // next();
+  next();
 });
 
 module.exports = apiRouter;

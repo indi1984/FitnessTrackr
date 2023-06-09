@@ -8,8 +8,6 @@ const { getAllActivities,
 
 // GET /api/activities/:activityId/routines
 
-
-
 // GET /api/activities
 activitiesRouter.get('/', async (req, res, next) => {
   try {
@@ -41,7 +39,5 @@ activitiesRouter.post('/', requireUser, async (req, res, next) => {
 });
 
 // PATCH /api/activities/:activityId
-
-
 
 module.exports = activitiesRouter;
