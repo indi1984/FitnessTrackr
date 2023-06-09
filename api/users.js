@@ -105,7 +105,6 @@ usersRouter.get('/:username/routines', async (req, res, next) => {
   try {
     if (user !== username) {
       const userPublicRoutines = await getPublicRoutinesByUser({ username });
-      console.log(userPublicRoutines);
       res.send(userPublicRoutines);
     } else if (auth.startsWith(prefix)) {
       const token = auth.slice(prefix.length);
