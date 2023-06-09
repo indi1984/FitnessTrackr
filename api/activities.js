@@ -3,7 +3,8 @@ const activitiesRouter = express.Router();
 const { requireUser } = require('./utils');
 const { ActivityExistsError } = require('../errors');
 const { getAllActivities,
-  createActivity } = require('../db/activities');
+  createActivity,
+  getActivityByName } = require('../db/activities');
 
 // GET /api/activities/:activityId/routines
 
@@ -20,15 +21,18 @@ activitiesRouter.get('/', async (req, res, next) => {
 
 // POST /api/activities
 activitiesRouter.post('/', requireUser, async (req, res, next) => {
-  const { name, description } = req.body;
+  console.log(req.user)
   try {
-    if (req.body) {
-      res.send(await createActivity({ name, description }));
+  const { name } = await getActivityByName(req.body.name);
+  console.log("NAME IS NAME", name);  
+  console.log("NAME IS NAME", req.body.name);  
+    if (name !== req.body.name) {
+      res.send(await createActivity(req.body));
     } else {
       throw ({
         error: "Duplicates",
         name: "Activity",
-        message: ActivityExistsError(name)
+        message: ActivityExistsError(req.body.name),
       })
     }
   } catch (error) {
