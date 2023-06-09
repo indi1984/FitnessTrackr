@@ -98,13 +98,13 @@ usersRouter.get('/me', async (req, res, next) => {
 });
 
 //GET /api/users/:username/routines
-usersRouter.get('/:username/routines', requireUser, async (req, res, next) => {
+usersRouter.get('/:username/routines', async (req, res, next) => {
   const { username } = req.params;
   console.log(username);
   const prefix = 'Bearer ';
   const auth = req.header('Authorization');
   console.log(auth);
-  if (!auth) {
+  if (!req.user) {
     try {
       const userPublicRoutines = await getPublicRoutinesByUser({ username });
       console.log(userPublicRoutines);

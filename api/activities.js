@@ -19,13 +19,12 @@ activitiesRouter.get('/', async (req, res, next) => {
 
 // POST /api/activities
 activitiesRouter.post('/', requireUser, async (req, res, next) => {
-  console.log(req.user)
+  const request = req.body;
   try {
-  const { name } = await getActivityByName(req.body.name);
-  console.log("NAME IS NAME", name);  
-  console.log("NAME IS NAME", req.body.name);  
-    if (name !== req.body.name) {
-      res.send(await createActivity(req.body));
+    const existingActivity = await getActivityByName(request.name);
+    if (!existingActivity) {
+      const { name, description } = await createActivity(request);    
+      res.send({ description, name });
     } else {
       throw ({
         error: "Duplicates",
