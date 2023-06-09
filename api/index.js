@@ -61,11 +61,19 @@ apiRouter.get('*', (req, res) => {
 
 //* Error Handler
 apiRouter.use((error, req, res, next) => {
-  res.send({
-    error: error.error,
-    name: error.name,
-    message: error.message    
-  });
+  if (error.statusCode) {
+    res.status(error.statusCode).send({
+      error: error.error,
+      name: error.name,
+      message: error.message    
+    });
+  } else {
+    res.send({
+      error: error.error,
+      name: error.name,
+      message: error.message    
+    });
+  }
   next();
 });
 

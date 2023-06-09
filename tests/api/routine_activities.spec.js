@@ -96,7 +96,7 @@ describe("/api/routine_activities", () => {
     });
   });
 
-  xdescribe("DELETE /api/routine_activities/:routineActivityId (**)", () => {
+  describe("DELETE /api/routine_activities/:routineActivityId (**)", () => {
     it("Removes an activity from a routine, uses hard delete", async () => {
       const { fakeUser, token } = await createFakeUserWithToken("Linus");
       const fakeRoutine = await createFakePublicRoutine(
