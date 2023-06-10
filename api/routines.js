@@ -69,13 +69,21 @@ routinesRouter.patch('/:routineId', async (req, res, next) => {
     updateFields.goal = goal;
   }
   try {
-    const routine = await getRoutineById(routineId);
-    if (user.id !== routine.creatorId) {
-      res.status(403).send({
-        error: "Unauthorized to update this routine",
-        message: UnauthorizedUpdateError(req.user.username, routine.name),
-        name: "Unauthorized Update Error"
-      });
+    if (routineId === 'undefined') {
+      throw ({
+        error: "Unauthorized",
+        name: "User",
+        message:  "Routine id is undefined!"
+      })
+    } else  {
+      const routine = await getRoutineById(routineId);
+      if (user.id !== routine.creatorId) {
+        res.status(403).send({
+          error: "Unauthorized to update this routine",
+          message: UnauthorizedUpdateError(req.user.username, routine.name),
+          name: "Unauthorized Update Error"
+        });
+      }
     }
     const updatedRoutine = await updateRoutine(updateFields);
     res.send(updatedRoutine);
